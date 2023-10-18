@@ -3,7 +3,7 @@
   kind: Deployment
   metadata:
     name: nginx
-    namespace: prod
+    namespace: my-app-2
     labels:
       app: nginx
   spec:
