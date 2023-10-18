@@ -18,6 +18,6 @@
       spec:
         containers:
           - name: nginx
-            image: dbaltor/nginx:v0.1.2
+            image: dbaltor/nginx:v0.1.3
             ports:
               - containerPort: 80
