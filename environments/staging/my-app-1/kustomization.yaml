@@ -1,0 +1,8 @@
+---
+  namespace: my-app-1
+  images:
+    - name: dbaltor/nginx
+      # newName: my-nginx
+      newTag: v0.1.0
+  resources:
+    - ../../../my-app-base

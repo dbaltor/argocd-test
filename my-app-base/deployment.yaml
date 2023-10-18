@@ -3,9 +3,6 @@
   kind: Deployment
   metadata:
     name: nginx
-    namespace: my-app-2
-    labels:
-      app: nginx
   spec:
     replicas: 1
     selector:
@@ -18,6 +15,7 @@
       spec:
         containers:
           - name: nginx
-            image: dbaltor/nginx:v0.1.3
+            imagePullPolicy: Always
+            image: dbaltor/nginx
             ports:
               - containerPort: 80
