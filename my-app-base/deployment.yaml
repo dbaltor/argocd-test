@@ -2,12 +2,10 @@
   apiVersion: apps/v1
   kind: Deployment
   metadata:
-    name: nginx
-    namespace: my-app-1
+    name: nginx-deployment
     labels:
       app: nginx
   spec:
-    replicas: 1
     selector:
       matchLabels:
         app: nginx
@@ -19,6 +17,6 @@
         containers:
           - name: nginx
             imagePullPolicy: Always
-            image: dbaltor/nginx:v0.1.3
+            image: dbaltor/nginx
             ports:
               - containerPort: 80

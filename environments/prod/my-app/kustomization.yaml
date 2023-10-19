@@ -1,0 +1,11 @@
+---
+  namespace: prod
+  replicas:
+    - name: nginx-deployment
+      count: 10
+  images:
+    - name: dbaltor/nginx
+      # newName: my-nginx
+      newTag: v0.1.0
+  resources:
+    - ../../../my-app-base
