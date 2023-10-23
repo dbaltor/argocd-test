@@ -6,6 +6,6 @@
   images:
     - name: dbaltor/nginx
       # newName: my-nginx
-      newTag: v0.1.0
+      newTag: v0.1.1
   resources:
     - ../../../my-app-3-base
