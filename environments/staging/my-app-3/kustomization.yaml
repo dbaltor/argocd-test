@@ -1,0 +1,11 @@
+---
+  namespace: my-app-3-staging
+  replicas:
+    - name: nginx-deployment
+      count: 2
+  images:
+    - name: dbaltor/nginx
+      # newName: my-nginx
+      newTag: v0.1.0
+  resources:
+    - ../../../my-app-3-base
