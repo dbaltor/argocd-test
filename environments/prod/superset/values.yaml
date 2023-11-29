@@ -1,0 +1,7 @@
+# top-level key must match the dependency name in the umbrella helm chart
+superset:
+  image:
+    repository: apache/superset
+  supersetWorker:
+    replicaCount: 3
+  
