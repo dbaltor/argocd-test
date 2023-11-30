@@ -2,5 +2,21 @@
 superset:
   image:
     repository: apache/superset
+  supersetCeleryBeat:
+    # -- This is only required if you intend to use alerts and reports
+    enabled: true
+  bootstrapScript: |
+    #!/bin/bash
+    pip install psycopg2==2.9.9 &&\
+    if [ ! -f ~/bootstrap ]; then echo "Running Superset with uid {{ .Values.runAsUser }}" > ~/bootstrap; fi
+  configOverrides:
+    my_override: |
+      # This will make sure the redirect_uri is properly computed, even with SSL offloading
+      ENABLE_PROXY_FIX = True
+      FEATURE_FLAGS = {
+          "DYNAMIC_PLUGINS": True
+      }
+
+
 
   
