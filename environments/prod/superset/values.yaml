@@ -3,6 +3,11 @@ superset:
   image:
     repository: apache/superset
   # Superset node configuration
+  postgresql:
+    postgresqlPassword: <path:prod/superset#postgresql-password>
+    auth:
+      ## Defines postgres superset user's password.
+      existingSecret: superset-postgres
   supersetNode:
     replicaCount: 1
     autoscaling:
@@ -37,15 +42,27 @@ superset:
         rm -f google-chrome-stable_current_amd64.deb chromedriver_linux64.zip
   
         # Run
-        . {{ .Values.configMountPath }}/superset_bootstrap.sh; celery --app=superset.tasks.celery_app:app worker    
+        . {{ .Values.configMountPath }}/superset_bootstrap.sh; celery --app=superset.tasks.celery_app:app worker
   bootstrapScript: |
     #!/bin/bash
     pip install psycopg2==2.9.9 &&\
     if [ ! -f ~/bootstrap ]; then echo "Running Superset with uid {{ .Values.runAsUser }}" > ~/bootstrap; fi
   configOverrides:
     my_override: |
+      # Configure a strong SECRET_KEY
+      SECRET_KEY = '<path:prod/superset#secret-key>'
+      # Configure Superset metastore
+      SQLALCHEMY_DATABASE_URI = 'postgresql://superset:<path:prod/superset#postgresql-password>@superset-postgresql/superset'
       # This will make sure the redirect_uri is properly computed, even with SSL offloading
       ENABLE_PROXY_FIX = True
       FEATURE_FLAGS = {
           "DYNAMIC_PLUGINS": True
       }
+  # env variables
+  extraEnv:
+    SMTP_HOST: smtp.gmail.com
+    SMTP_USER: user@gmail.com
+    SMTP_PORT: "587"
+    SMTP_MAIL_FROM: user@gmail.com
+  extraSecretEnv:
+    SMTP_PASSWORD: <path:prod/superset#smtp-password>
