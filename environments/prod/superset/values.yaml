@@ -1,13 +1,14 @@
 # top-level key must match the dependency name in the umbrella helm chart
 superset:
   image:
+    # opt-out of data collection via Scarf Gateway
     repository: apache/superset
-  # Superset node configuration
+  # Defines postgres superset user's password
   postgresql:
     postgresqlPassword: <path:prod/superset#postgresql-password>
     auth:
-      ## Defines postgres superset user's password.
       existingSecret: superset-postgres
+  # Superset node configuration
   supersetNode:
     replicaCount: 1
     autoscaling:
@@ -17,11 +18,12 @@ superset:
       targetCPUUtilizationPercentage: 80
       targetMemoryUtilizationPercentage: 80
   supersetCeleryBeat:
-    # -- This is only required if you intend to use alerts and reports
+    # This is required to trigger the scheduled tasks to send alerts and reports
     enabled: true
   supersetWorker:
+    # Scale out celery works to query datasets in parallel
     replicaCount: 3
-    # Enable Alerts and Reports
+    # Install chromedriver used to send Alerts and Reports
     command:
       - /bin/sh
       - -c
@@ -45,20 +47,22 @@ superset:
         . {{ .Values.configMountPath }}/superset_bootstrap.sh; celery --app=superset.tasks.celery_app:app worker
   bootstrapScript: |
     #!/bin/bash
+    # Install postgres driver
     pip install psycopg2==2.9.9 &&\
     if [ ! -f ~/bootstrap ]; then echo "Running Superset with uid {{ .Values.runAsUser }}" > ~/bootstrap; fi
   configOverrides:
     my_override: |
       # Configure a strong SECRET_KEY
       SECRET_KEY = '<path:prod/superset#secret-key>'
-      # Configure Superset metastore
+      # Configure Superset metastore access with the new postgres password
       SQLALCHEMY_DATABASE_URI = 'postgresql://superset:<path:prod/superset#postgresql-password>@superset-postgresql/superset'
       # This will make sure the redirect_uri is properly computed, even with SSL offloading
       ENABLE_PROXY_FIX = True
+      # https://github.com/apache/superset/blob/master/RESOURCES/FEATURE_FLAGS.md
       FEATURE_FLAGS = {
-          "DYNAMIC_PLUGINS": True
+          "DYNAMIC_PLUGINS": False
       }
-  # env variables
+  # env variables to config SMTP server access
   extraEnv:
     SMTP_HOST: smtp.gmail.com
     SMTP_USER: user@gmail.com
@@ -66,3 +70,4 @@ superset:
     SMTP_MAIL_FROM: user@gmail.com
   extraSecretEnv:
     SMTP_PASSWORD: <path:prod/superset#smtp-password>
+
