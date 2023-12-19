@@ -3,11 +3,9 @@ superset:
   image:
     # opt-out of data collection via Scarf Gateway
     repository: apache/superset
-  # Defines postgres superset user's password
   postgresql:
-    postgresqlPassword: <path:prod/superset#postgresql-password>
-    auth:
-      existingSecret: superset-postgres
+    ## Set to false if bringing your own PostgreSQL.
+    enabled: false
   # Superset node configuration
   supersetNode:
     replicaCount: 1
@@ -17,12 +15,25 @@ superset:
       maxReplicas: 10
       targetCPUUtilizationPercentage: 80
       targetMemoryUtilizationPercentage: 80
+    connections:
+      # You need to change below configuration incase bringing own PostgresSQL instance and also set postgresql.enabled:false
+      db_host: "superset.cdwqyes4ujvo.eu-west-2.rds.amazonaws.com/"
+      db_port: "5432"
+      db_user: superset
+      db_pass: <path:prod/superset#postgresql-password>
+      db_name: superset
+    # Disable waiting for postgres
+    initContainers:
   supersetCeleryBeat:
     # This is required to trigger the scheduled tasks to send alerts and reports
     enabled: true
+    # Disable waiting for postgres
+    initContainers:
   supersetWorker:
     # Scale out celery works to query datasets in parallel
     replicaCount: 3
+    # Disable waiting for postgres
+    initContainers:
     # Install chromedriver used to send Alerts and Reports
     command:
       - /bin/sh
@@ -55,7 +66,7 @@ superset:
       # Configure a strong SECRET_KEY
       SECRET_KEY = '<path:prod/superset#secret-key>'
       # Configure Superset metastore access with the new postgres password
-      SQLALCHEMY_DATABASE_URI = 'postgresql://superset:<path:prod/superset#postgresql-password>@superset-postgresql/superset'
+      SQLALCHEMY_DATABASE_URI = 'postgresql://superset:<path:prod/superset#postgresql-password>@superset.cdwqyes4ujvo.eu-west-2.rds.amazonaws.com/superset'
       # This will make sure the redirect_uri is properly computed, even with SSL offloading
       ENABLE_PROXY_FIX = True
       # https://github.com/apache/superset/blob/master/RESOURCES/FEATURE_FLAGS.md
@@ -70,4 +81,6 @@ superset:
     SMTP_MAIL_FROM: user@gmail.com
   extraSecretEnv:
     SMTP_PASSWORD: <path:prod/superset#smtp-password>
-
+  init:
+    # Disable waiting for postgres
+    initContainers:
