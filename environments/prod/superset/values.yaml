@@ -84,12 +84,20 @@ superset:
   init:
     # Disable waiting for postgres
     initContainers:
-  service:
-    type: LoadBalancer
-    port: 8088
-    nodePort:
-      http: 0
+  # Enable ingress controller
+  ingress:
+    enabled: true
     annotations:
-      external-dns.alpha.kubernetes.io/hostname: "superset.dbaltor.online"
-      service.beta.kubernetes.io/aws-load-balancer-external: "true"
-      service.beta.kubernetes.io/aws-load-balancer-name: "superset"
+      alb.ingress.kubernetes.io/target-type: ip
+      alb.ingress.kubernetes.io/scheme: internet-facing
+      alb.ingress.kubernetes.io/healthcheck-path: /health
+      alb.ingress.kubernetes.io/certificate-arn: <path:prod/superset#alb-cert-arn>
+    ingressClassName: alb
+    pathType: Prefix
+    hosts:
+      - superset.dbaltor.online
+    # Used when enabling TLS to the ingress
+    # tls:
+    #   - hosts:
+    #     - superset.dbaltor.online
+    #     secretName: superset-ingress-tls
