@@ -92,10 +92,12 @@ superset:
       alb.ingress.kubernetes.io/target-type: ip
       alb.ingress.kubernetes.io/scheme: internet-facing
       alb.ingress.kubernetes.io/healthcheck-path: /health
+      alb.ingress.kubernetes.io/certificate-arn: <path:prod/superset#alb-cert-arn>
     pathType: Prefix
     hosts:
       - superset.dbaltor.online
-    tls:
-      - hosts:
-        - superset.dbaltor.online
-        secretName: superset-ingress-tls
+    # Used when enabling TLS to the ingress
+    # tls:
+    #   - hosts:
+    #     - superset.dbaltor.online
+    #     secretName: superset-ingress-tls
