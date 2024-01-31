@@ -58,6 +58,9 @@ superset:
         . {{ .Values.configMountPath }}/superset_bootstrap.sh; celery --app=superset.tasks.celery_app:app worker
   bootstrapScript: |
     #!/bin/bash
+    echo "holidays==0.23" > /tmp/constraints.txt # apache-superset 3.0.1 requires holidays 0.23
+    # Install Prophet (Predictive Analytics)
+    pip install -c /tmp/constraints.txt prophet==1.1.3
     # Install postgres driver
     pip install psycopg2==2.9.9 &&\
     if [ ! -f ~/bootstrap ]; then echo "Running Superset with uid {{ .Values.runAsUser }}" > ~/bootstrap; fi
