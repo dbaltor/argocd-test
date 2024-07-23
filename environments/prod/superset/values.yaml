@@ -17,7 +17,7 @@ superset:
       targetMemoryUtilizationPercentage: 80
     connections:
       # You need to change below configuration incase bringing own PostgresSQL instance and also set postgresql.enabled:false
-      db_host: "superset.cdwqyes4ujvo.eu-west-2.rds.amazonaws.com/"
+      db_host: "superset.cdwqyes4ujvo.eu-west-2.rds.amazonaws.com"
       db_port: "5432"
       db_user: superset
       db_pass: <path:prod/superset#postgresql-password>
@@ -53,6 +53,7 @@ superset:
   bootstrapScript: |
     #!/bin/bash
     echo "holidays==0.23" > /tmp/constraints.txt # apache-superset 3.0.1 requires holidays 0.23
+    pip install --upgrade pip
     # Install Prophet (Predictive Analytics)
     pip install -c /tmp/constraints.txt prophet==1.1.3
     # Install postgres driver
