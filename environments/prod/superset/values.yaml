@@ -6,6 +6,8 @@ superset:
   postgresql:
     ## Set to false if bringing your own PostgreSQL.
     enabled: false
+  init:
+    loadExamples: true
   # Superset node configuration
   supersetNode:
     replicaCount: 1
