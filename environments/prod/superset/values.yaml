@@ -22,18 +22,12 @@ superset:
       db_user: superset
       db_pass: <path:prod/superset#postgresql-password>
       db_name: superset
-    # Disable waiting for postgres
-    initContainers:
   supersetCeleryBeat:
     # This is required to trigger the scheduled tasks to send alerts and reports
     enabled: true
-    # Disable waiting for postgres
-    initContainers:
   supersetWorker:
     # Scale out celery works to query datasets in parallel
     replicaCount: 3
-    # Disable waiting for postgres
-    initContainers:
     # Install chromedriver used to send Alerts and Reports
     command:
       - /bin/sh
@@ -84,9 +78,6 @@ superset:
     SMTP_MAIL_FROM: user@gmail.com
   extraSecretEnv:
     SMTP_PASSWORD: <path:prod/superset#smtp-password>
-  init:
-    # Disable waiting for postgres
-    initContainers:
   # Enable ingress controller
   ingress:
     enabled: true
