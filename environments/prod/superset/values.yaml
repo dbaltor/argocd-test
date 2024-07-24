@@ -8,6 +8,12 @@ superset:
     enabled: false
   init:
     loadExamples: true
+    adminUser:
+      username: admin
+      firstname: Superset
+      lastname: Admin
+      email: admin@superset.com
+      password: <path:prod/superset#admin-password>
   # Superset node configuration
   supersetNode:
     replicaCount: 1
