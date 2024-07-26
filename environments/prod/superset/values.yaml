@@ -3,6 +3,7 @@ superset:
   image:
     # opt-out of data collection via Scarf Gateway
     repository: apache/superset
+    tag: 4.0.2
   postgresql:
     ## Set to false if bringing your own PostgreSQL.
     enabled: false
